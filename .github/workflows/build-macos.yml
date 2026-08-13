@@ -1,0 +1,23 @@
+name: Build macOS DMG
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+      - name: Build and package
+        run: ./scripts/build_dmg.sh
+      - name: Upload DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: One-IMAGE-Compare-arm64
+          path: dist/*.dmg
+          if-no-files-found: error
